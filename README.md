@@ -109,6 +109,21 @@ CRIAÇÃO DO PROJETO NEST
 - CRIAR CONTROLLER (subtituir nome_do_controller pelo nome real)
 ## nest g controller nome_do_controller
 
+- CRIAR SERVICE (subtituir nome_do_controller pelo nome real)
+## nest g service nome_do_controller
+
+- IMPORT PARA CRIPTOGRAFAR A SENHA
+## npm i bcrypt
+## npm i -D @types/bcrypt (apenas para dev)
+
+- CONFIGURAÇÃO DO PROJETO
+## npm i --save @nestjs/config
+
+- CONEXÃO COM BANCO DE DADOS (pg é de POSTGRES, não é mysql)
+## npm install --save typeorm pg @nestjs/typeorm
+
+
+
 
 - RODAR O SISTEMA PARA QUE QUALQUER ALTERAÇÃO REINICIE AUTOM
 ## npm run start:dev
