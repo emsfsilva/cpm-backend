@@ -128,3 +128,6 @@ CRIAÇÃO DO PROJETO NEST
 - RODAR O SISTEMA PARA QUE QUALQUER ALTERAÇÃO REINICIE AUTOM
 ## npm run start:dev
 
+- CRIAÇÃO DAS MIGRATIONS
+## npx typeorm migration:create ./src/migration/create_table_user
+
