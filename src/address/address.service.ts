@@ -15,6 +15,7 @@ export class AddressService {
     private readonly cityService: CityService,
   ) {}
 
+  //Aqui esta acessando as info basicas do endereço que estao no DTO
   async createAddress(
     createAddressDto: CreateAddressDto,
     userId: number,

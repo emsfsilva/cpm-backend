@@ -37,6 +37,7 @@ export class UserEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  //OneToMany indica que é 1 usaurio para varios endereços
   @OneToMany(() => AddressEntity, (address) => address.user)
   addresses?: AddressEntity[];
 }

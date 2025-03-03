@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { compare } from 'bcrypt';
 import { validatePassword } from 'src/utils/password';
 import { ReturnUserDto } from '../user/dtos/returnUser.dto';
 import { UserEntity } from '../user/entities/user.entity';
@@ -27,7 +26,7 @@ export class AuthService {
     );
 
     if (!user || !isMatch) {
-      throw new NotFoundException('Email or passord invalid');
+      throw new NotFoundException('Email ou Password esta invalido');
     }
 
     return {

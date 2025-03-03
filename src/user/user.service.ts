@@ -36,6 +36,7 @@ export class UserService {
     });
   }
 
+  //Aqui busca o usuario pelo ID com suas relações nas tabelas CITY e STATE
   async getUserByIdUsingRelations(userId: number): Promise<UserEntity> {
     return this.userRepository.findOne({
       where: {
@@ -63,7 +64,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException(`UserId: ${userId} Not Found`);
+      throw new NotFoundException(`UserId: ${userId} Id não Encontrado`);
     }
 
     return user;
@@ -77,7 +78,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException(`Email: ${email} Not Found`);
+      throw new NotFoundException(`Email: ${email} Email não Encontrado`);
     }
 
     return user;

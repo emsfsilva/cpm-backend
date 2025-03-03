@@ -26,6 +26,7 @@ export class UserController {
     return this.userService.createUser(createUser);
   }
 
+  //Aqui ao usuario acessar essa rota, o ReturnUserDto retorna apenas os dados que estão no ReturnUserDto
   @Get()
   async getAllUser(): Promise<ReturnUserDto[]> {
     return (await this.userService.getAllUser()).map(

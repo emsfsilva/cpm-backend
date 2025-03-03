@@ -36,11 +36,15 @@ export class AddressEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  //ManyToOne indica que são varios endereços para apenas 1 usuario
   @ManyToOne(() => UserEntity, (user) => user.addresses)
+  //JoinColumn indidca nome da coluna da tabela ADDRESS e o referencedColumnName indica qual coluna da tabela USER ira se relacionar
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user?: UserEntity;
 
+  //ManyToOne indica que são varios endereços para apenas 1 cidade
   @ManyToOne(() => CityEntity, (city) => city.addresses)
+  //JoinColumn indidca nome da coluna da tabela ADDRESS e o referencedColumnName indica qual coluna da tabela CITY ira se relacionar
   @JoinColumn({ name: 'city_id', referencedColumnName: 'id' })
   city?: CityEntity;
 }

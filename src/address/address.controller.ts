@@ -14,6 +14,7 @@ import { CreateAddressDto } from './dtos/createAddress.dto';
 import { ReturnAddressDto } from './dtos/returnAddress.dto';
 import { AddressEntity } from './entities/address.entity';
 
+//UserType.User é o ususrio comum e UserType.Admin é o administrador
 @Roles(UserType.User, UserType.Admin)
 @Controller('address')
 export class AddressController {

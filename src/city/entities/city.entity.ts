@@ -28,10 +28,14 @@ export class CityEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  //OneToMany indica que é 1 cidade para varios endereços
   @OneToMany(() => AddressEntity, (address) => address.city)
   addresses?: AddressEntity[];
 
+  //ManyToOne indica que são varios cidades para apenas 1 estado
   @ManyToOne(() => StateEntity, (state) => state.cities)
+  //JoinColumn indidca nome da coluna da tabela CITY que irá fazer referencia na outra tabela
+  // referencedColumnName indica qual coluna da tabela STATE ira se relacionar
   @JoinColumn({ name: 'state_id', referencedColumnName: 'id' })
   state?: StateEntity;
 }
