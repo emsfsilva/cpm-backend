@@ -14,14 +14,21 @@ import { CreateAddressDto } from './dtos/createAddress.dto';
 import { ReturnAddressDto } from './dtos/returnAddress.dto';
 import { AddressEntity } from './entities/address.entity';
 
-//UserType.User é o ususrio comum e UserType.Admin é o administrador
-@Roles(UserType.User, UserType.Admin)
+@Roles(
+  UserType.Master,
+  UserType.Comando,
+  UserType.CmtCa,
+  UserType.CmtCia,
+  UserType.Adm,
+  UserType.Monitor,
+  UserType.Aluno,
+)
+@UsePipes(ValidationPipe)
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
   async createAddress(
     @Body() createAddressDto: CreateAddressDto,
     @UserId() userId: number,

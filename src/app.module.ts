@@ -10,8 +10,11 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
-import { CategoryModule } from './category/category.module';
-import { ProductModule } from './product/product.module';
+import { CaModule } from './ca/ca.module';
+import { CiaModule } from './cia/cia.module';
+import { AdmModule } from './adm/adm.module';
+import { TurmaModule } from './turma/turma.module';
+import { AlunoModule } from './aluno/aluno.module';
 
 @Module({
   imports: [
@@ -36,8 +39,11 @@ import { ProductModule } from './product/product.module';
     CacheModule,
     AuthModule,
     JwtModule,
-    CategoryModule,
-    ProductModule,
+    CaModule,
+    CiaModule,
+    AdmModule,
+    TurmaModule,
+    AlunoModule,
   ],
   controllers: [],
   providers: [

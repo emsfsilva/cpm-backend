@@ -8,45 +8,52 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import path from 'path';
 import { UserId } from 'src/decorators/user-id.decorator';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { ReturnUserDto } from './dtos/returnUser.dto';
 import { UpdatePasswordDTO } from './dtos/update-password.dto';
-import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
+import { Roles } from 'src/decorators/roles.decorator';
+import { UserType } from './enum/user-type.enum';
 
 @Controller('user')
+@Roles(
+  UserType.Master,
+  UserType.Comando,
+  UserType.CmtCa,
+  UserType.CmtCia,
+  UserType.Adm,
+  UserType.Monitor,
+  UserType.Aluno,
+)
+@UsePipes(ValidationPipe)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UsePipes(ValidationPipe)
   @Post()
-  async createUser(@Body() createUser: CreateUserDto): Promise<UserEntity> {
-    return this.userService.createUser(createUser);
+  // Agora retornamos um ReturnUserDto em vez de UserEntity
+  async createUser(@Body() createUser: CreateUserDto): Promise<ReturnUserDto> {
+    const user = await this.userService.createUser(createUser);
+    return new ReturnUserDto(user); // Retorna o DTO adequado
   }
 
-  //Aqui ao usuario acessar essa rota, o ReturnUserDto retorna apenas os dados que estão no ReturnUserDto
   @Get()
   async getAllUser(): Promise<ReturnUserDto[]> {
-    return (await this.userService.getAllUser()).map(
-      (userEntity) => new ReturnUserDto(userEntity),
-    );
+    const users = await this.userService.getAllUser();
+    return users.map((userEntity) => new ReturnUserDto(userEntity)); // Transforma todos em ReturnUserDto
   }
 
   @Get('/:userId')
   async getUserById(@Param('userId') userId: number): Promise<ReturnUserDto> {
-    return new ReturnUserDto(
-      await this.userService.getUserByIdUsingRelations(userId),
-    );
+    const user = await this.userService.getUserByIdUsingRelations(userId);
+    return new ReturnUserDto(user);
   }
 
   @Patch()
-  @UsePipes(ValidationPipe)
   async updatePasswordUser(
     @Body() updatePasswordDTO: UpdatePasswordDTO,
     @UserId() userId: number,
-  ): Promise<UserEntity> {
+  ) {
     return this.userService.updatePasswordUser(updatePasswordDTO, userId);
   }
 }
