@@ -15,6 +15,11 @@ import { CiaModule } from './cia/cia.module';
 import { AdmModule } from './adm/adm.module';
 import { TurmaModule } from './turma/turma.module';
 import { AlunoModule } from './aluno/aluno.module';
+import { ComunicacaoModule } from './comunicacao/comunicacao.module';
+import { MonitorModule } from './monitor/monitor.module';
+import { SubcomModule } from './subcom/subcom.module';
+import { CmtciaModule } from './cmtcia/cmtcia.module';
+import { MasterModule } from './master/master.module';
 
 @Module({
   imports: [
@@ -44,6 +49,11 @@ import { AlunoModule } from './aluno/aluno.module';
     AdmModule,
     TurmaModule,
     AlunoModule,
+    MonitorModule,
+    SubcomModule,
+    CmtciaModule,
+    MasterModule,
+    ComunicacaoModule,
   ],
   controllers: [],
   providers: [

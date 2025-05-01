@@ -15,9 +15,10 @@ import { UpdatePasswordDTO } from './dtos/update-password.dto';
 import { UserService } from './user.service';
 import { Roles } from 'src/decorators/roles.decorator';
 import { UserType } from './enum/user-type.enum';
+import { ReturnAlunoDTO } from 'src/aluno/dtos/return-aluno.dto';
 
 @Controller('user')
-@Roles(
+/*@Roles(
   UserType.Master,
   UserType.Comando,
   UserType.CmtCa,
@@ -27,6 +28,7 @@ import { UserType } from './enum/user-type.enum';
   UserType.Aluno,
 )
 @UsePipes(ValidationPipe)
+*/
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -46,7 +48,17 @@ export class UserController {
   @Get('/:userId')
   async getUserById(@Param('userId') userId: number): Promise<ReturnUserDto> {
     const user = await this.userService.getUserByIdUsingRelations(userId);
-    return new ReturnUserDto(user);
+
+    let alunoDTO;
+    if (user?.typeUser === 1 && user.aluno) {
+      const grauAtual = (user.aluno as any).grauAtual;
+      alunoDTO = new ReturnAlunoDTO(user.aluno, grauAtual);
+    }
+
+    return new ReturnUserDto({
+      ...user,
+      aluno: alunoDTO,
+    });
   }
 
   @Patch()

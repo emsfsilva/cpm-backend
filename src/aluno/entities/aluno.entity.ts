@@ -19,9 +19,6 @@ export class AlunoEntity {
   @Column({ name: 'user_id', nullable: false })
   userId: number;
 
-  @Column({ name: 'comport', nullable: false })
-  comport: string;
-
   @Column({ name: 'resp1', nullable: false })
   resp1: string;
 
@@ -30,6 +27,9 @@ export class AlunoEntity {
 
   @Column({ name: 'turma_id', nullable: false })
   turmaId: number;
+
+  @Column({ name: 'grau_inicial', type: 'float', nullable: false })
+  grauInicial: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

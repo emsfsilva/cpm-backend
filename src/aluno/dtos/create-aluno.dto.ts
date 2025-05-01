@@ -5,13 +5,13 @@ export class CreateAlunoDTO {
   userId: number;
 
   @IsString()
-  comport: string;
-
-  @IsString()
   resp1: string;
 
   @IsString()
   resp2: string;
+
+  @IsNumber()
+  grauInicial: number;
 
   @IsNumber()
   turmaId: number;

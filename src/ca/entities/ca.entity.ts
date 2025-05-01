@@ -1,4 +1,3 @@
-import { CiaEntity } from 'src/cia/entities/cia.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,

@@ -19,7 +19,7 @@ import { AlunoEntity } from './entities/aluno.entity';
 import { AlunoService } from './aluno.service';
 
 @Controller('aluno')
-@Roles(
+/*@Roles(
   UserType.Master,
   UserType.Comando,
   UserType.CmtCa,
@@ -28,7 +28,9 @@ import { AlunoService } from './aluno.service';
   UserType.Monitor,
   UserType.Aluno,
 )
+  
 @UsePipes(ValidationPipe)
+*/
 export class AlunoController {
   constructor(private readonly alunoService: AlunoService) {}
 
@@ -42,6 +44,18 @@ export class AlunoController {
   @Post()
   async createAluno(@Body() createAluno: CreateAlunoDTO): Promise<AlunoEntity> {
     return this.alunoService.createAluno(createAluno);
+  }
+
+  @Get('/:alunoId')
+  async getAlunoById(
+    @Param('alunoId') alunoId: number,
+  ): Promise<ReturnAlunoDTO> {
+    return this.alunoService.findAlunoById(alunoId);
+  }
+
+  @Get('por-user/:userId')
+  async findAlunoByUserId(@Param('userId') userId: number) {
+    return this.alunoService.findAlunoByUserId(userId);
   }
 
   @Delete('/:alunoId')

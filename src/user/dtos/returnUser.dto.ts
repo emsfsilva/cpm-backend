@@ -1,6 +1,5 @@
 import { ReturnAlunoDTO } from 'src/aluno/dtos/return-aluno.dto';
 import { ReturnAddressDto } from '../../address/dtos/returnAddress.dto';
-import { UserEntity } from '../entities/user.entity';
 import { UserType } from '../enum/user-type.enum'; // Importe o UserType
 import { ReturnAdmDTO } from 'src/adm/dtos/return-adm.dto';
 import { ReturnCaDTO } from 'src/ca/dtos/return-ca.dto';
@@ -18,14 +17,14 @@ export class ReturnUserDto {
   mat: number;
   nomeGuerra: string;
   funcao: string;
-
-  typeUser: UserType; // Incluindo o tipo de usuário
+  typeUser: UserType;
   addresses?: ReturnAddressDto[];
-  aluno?: ReturnAlunoDTO; // Adicionando a relação com AlunoDTO
-  adm?: ReturnAdmDTO; // Adicionando a relação com AlunoDTO
-  ca?: ReturnCaDTO; // Adicionando a relação com AlunoDTO
+  aluno?: ReturnAlunoDTO;
+  adm?: ReturnAdmDTO;
+  ca?: ReturnCaDTO;
 
-  constructor(userEntity: UserEntity) {
+  constructor(userEntity: any, grauAtual?: number) {
+    // Mudamos para 'any' porque o resultado pode ter o totalComportamento
     this.id = userEntity.id;
     this.name = userEntity.name;
     this.email = userEntity.email;
@@ -36,19 +35,22 @@ export class ReturnUserDto {
     this.mat = userEntity.mat;
     this.nomeGuerra = userEntity.nomeGuerra;
     this.funcao = userEntity.funcao;
+    this.typeUser = userEntity.typeUser;
 
-    this.typeUser = userEntity.typeUser; // Atribuindo o tipo de usuário
-
+    // Mapeando as relações
     this.addresses = userEntity.addresses
       ? userEntity.addresses.map((address) => new ReturnAddressDto(address))
       : undefined;
 
+    // Mapeamento do administrador
     this.aluno = userEntity.aluno
-      ? new ReturnAlunoDTO(userEntity.aluno)
+      ? new ReturnAlunoDTO(userEntity.aluno, grauAtual)
       : undefined;
 
+    // Mapeamento do administrador
     this.adm = userEntity.adm ? new ReturnAdmDTO(userEntity.adm) : undefined;
 
+    // Mapeamento do Ca
     this.ca = userEntity.ca ? new ReturnCaDTO(userEntity.ca) : undefined;
   }
 }

@@ -6,9 +6,9 @@ export class createTableAluno1675766857443 implements MigrationInterface {
             CREATE TABLE public.aluno ( 
                 id integer NOT NULL,
                 user_id integer NOT NULL,
-                comport character varying NOT NULL,
                 resp1 character varying NOT NULL,
                 resp2 character varying NOT NULL,
+                grau_inicial float NOT NULL,
                 turma_id integer NOT NULL,
                 created_at timestamp without time zone DEFAULT now() NOT NULL,
                 updated_at timestamp without time zone DEFAULT now() NOT NULL,
