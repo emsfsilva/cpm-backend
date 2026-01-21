@@ -16,16 +16,18 @@ export class AddressService {
   ) {}
 
   //Aqui esta acessando as info basicas do endereço que estao no DTO
+  // src/address/address.service.ts
+
   async createAddress(
     createAddressDto: CreateAddressDto,
-    userId: number,
+    userLogadoId: number,
   ): Promise<AddressEntity> {
-    await this.userService.findUserById(userId);
+    await this.userService.findUserById(createAddressDto.userId);
     await this.cityService.findCityById(createAddressDto.cityId);
 
     return this.addressRepository.save({
       ...createAddressDto,
-      userId,
+      userId: createAddressDto.userId, // Explicitamente
     });
   }
 

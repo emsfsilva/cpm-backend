@@ -5,21 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StateModule } from './state/state.module';
 import { CityModule } from './city/city.module';
 import { AddressModule } from './address/address.module';
-import { CacheModule } from './cache/cache.module';
+import { CacheCustomModule } from './cache/cache.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
-import { CaModule } from './ca/ca.module';
 import { CiaModule } from './cia/cia.module';
-import { AdmModule } from './adm/adm.module';
 import { TurmaModule } from './turma/turma.module';
 import { AlunoModule } from './aluno/aluno.module';
 import { ComunicacaoModule } from './comunicacao/comunicacao.module';
-import { MonitorModule } from './monitor/monitor.module';
-import { SubcomModule } from './subcom/subcom.module';
-import { CmtciaModule } from './cmtcia/cmtcia.module';
-import { MasterModule } from './master/master.module';
+import { AutorizacaoModule } from './autorizacao/autorizacao.module';
+import { ComentarioModule } from './comentario/comentario.module';
 
 @Module({
   imports: [
@@ -41,19 +37,15 @@ import { MasterModule } from './master/master.module';
     StateModule,
     CityModule,
     AddressModule,
-    CacheModule,
+    CacheCustomModule,
     AuthModule,
     JwtModule,
-    CaModule,
     CiaModule,
-    AdmModule,
     TurmaModule,
     AlunoModule,
-    MonitorModule,
-    SubcomModule,
-    CmtciaModule,
-    MasterModule,
     ComunicacaoModule,
+    AutorizacaoModule,
+    ComentarioModule,
   ],
   controllers: [],
   providers: [

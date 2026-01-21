@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { CityService } from './city.service';
 import { CityEntity } from './entities/city.entity';
 
@@ -8,8 +8,13 @@ export class CityController {
 
   @Get('/:stateId')
   async getAllCitiesByStateId(
-    @Param('stateId') stateId: number,
+    @Param('stateId', ParseIntPipe) stateId: number,
   ): Promise<CityEntity[]> {
     return this.cityService.getAllCitiesByStateId(stateId);
+  }
+
+  @Get()
+  async getAllCities(): Promise<CityEntity[]> {
+    return this.cityService.getAllCities();
   }
 }

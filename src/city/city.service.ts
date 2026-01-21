@@ -13,14 +13,23 @@ export class CityService {
     private readonly cacheService: CacheService,
   ) {}
 
+  async getAllCities(): Promise<CityEntity[]> {
+    return this.cityRepository.find({
+      relations: ['state'],
+      order: { name: 'ASC' },
+    });
+  }
+
   async getAllCitiesByStateId(stateId: number): Promise<CityEntity[]> {
-    return this.cacheService.getCache<CityEntity[]>(`state_${stateId}`, () =>
-      this.cityRepository.find({
-        where: {
-          stateId,
-        },
-      }),
-    );
+    try {
+      const cidades = await this.cityRepository.find({
+        where: { stateId },
+      });
+      return cidades;
+    } catch (error) {
+      console.error('Erro ao buscar cidades:', error);
+      throw error;
+    }
   }
 
   async findCityById(cityId: number): Promise<CityEntity> {

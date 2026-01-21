@@ -15,30 +15,17 @@ import { ReturnComunicacaoDTO } from './dtos/return-comunicacao.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { EnquadramentoDto } from './dtos/enquadramento.dto';
 import { ArquivamentoDto } from './dtos/arquivamento.dto';
+import { Delete } from '@nestjs/common';
 
 @Controller('comunicacao')
-//@UseGuards(JwtAuthGuard) // Protege todas as rotas com o guard
+@UseGuards(JwtAuthGuard)
 export class ComunicacaoController {
   constructor(private readonly comunicacaoService: ComunicacaoService) {}
 
-  @Get('/comunicacao-concluidas')
-  async contarEmConcluidas() {
-    return this.comunicacaoService.contarComunicacoesConcluidas();
-  }
-
-  @Get('/comunicacao-publicadas')
-  async contarPublicadas() {
-    return this.comunicacaoService.contarComunicacoesPublicadas();
-  }
-
-  @Get('/comunicacao-aguardando-publicacao')
-  async contarAguardandoPublicacao() {
-    return this.comunicacaoService.contarComunicacoesAguardandoPublicacao();
-  }
-
-  @Get('/contar-em-tramitacao')
-  async contarEmTramitacao() {
-    return this.comunicacaoService.contarComunicacoesEmTramitacao();
+  // Endpoint para retornar contagem agrupada por companhia e status
+  @Get('/contar-agrupado-status-cia')
+  async contarAgrupadoPorStatusECia() {
+    return this.comunicacaoService.contarComunicacoesAgrupadasPorStatusECia();
   }
 
   // Endpoint para contar comunicações por status filtrando por CIA
@@ -63,6 +50,11 @@ export class ComunicacaoController {
       createComunicacaoDTO,
       userIdCom,
     );
+  }
+
+  @Delete(':id')
+  async excluirComunicacao(@Param('id') id: number): Promise<void> {
+    return this.comunicacaoService.excluirComunicacao(id);
   }
 
   // Endpoint para notificar o aluno para responder a comunicação
@@ -167,8 +159,9 @@ export class ComunicacaoController {
   @Get('/:comunicacaoId')
   async getComunicacaoById(
     @Param('comunicacaoId') comunicacaoId: number,
+    @Request() req: any,
   ): Promise<ReturnComunicacaoDTO> {
-    return this.comunicacaoService.findComunicacaoById(comunicacaoId);
+    return this.comunicacaoService.findComunicacaoById(comunicacaoId, req.user);
   }
 
   // Endpoint para buscar todas as comunicações de um aluno

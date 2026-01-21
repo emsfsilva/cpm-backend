@@ -28,8 +28,11 @@ export class TurmaEntity {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  //@OneToMany(() => AlunoEntity, (aluno: AlunoEntity) => aluno.turma)
+  //aluno?: AlunoEntity;
+
   @OneToMany(() => AlunoEntity, (aluno: AlunoEntity) => aluno.turma)
-  alunos?: AlunoEntity;
+  alunos?: AlunoEntity[];
 
   @ManyToOne(() => CiaEntity, (cia) => cia.turmas)
   @JoinColumn({ name: 'cia_id', referencedColumnName: 'id' })

@@ -4,8 +4,8 @@ import { AlunoEntity } from '../entities/aluno.entity';
 export const alunoMock: AlunoEntity = {
   id: 7435,
   userId: 1,
-  resp1: 'Luiz Francisco da Silva',
-  resp2: 'Renevalda Maria',
+  resp1: 1,
+  resp2: 1,
   grauInicial: 10,
   turmaId: turmaMock.id,
   createdAt: new Date(),

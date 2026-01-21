@@ -35,25 +35,25 @@ describe('UserService', () => {
     expect(userRepository).toBeDefined();
   });
 
-  it('should return user in findUserByEmail', async () => {
-    const user = await service.findUserByEmail(userEntityMock.email);
+  it('should return user in findUserBySeduc', async () => {
+    const user = await service.findUserBySeduc(userEntityMock.seduc);
 
     expect(user).toEqual(userEntityMock);
   });
 
-  it('should return error in findUserByEmail', async () => {
+  it('should return error in findUserBySeduc', async () => {
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
 
     expect(
-      service.findUserByEmail(userEntityMock.email),
+      service.findUserBySeduc(userEntityMock.seduc),
     ).rejects.toThrowError();
   });
 
-  it('should return error in findUserByEmail (error DB)', async () => {
+  it('should return error in findUserBySeduc (error DB)', async () => {
     jest.spyOn(userRepository, 'findOne').mockRejectedValueOnce(new Error());
 
     expect(
-      service.findUserByEmail(userEntityMock.email),
+      service.findUserBySeduc(userEntityMock.seduc),
     ).rejects.toThrowError();
   });
 
@@ -67,7 +67,7 @@ describe('UserService', () => {
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(undefined);
 
     expect(
-      service.findUserByEmail(userEntityMock.email),
+      service.findUserBySeduc(userEntityMock.seduc),
     ).rejects.toThrowError();
   });
 

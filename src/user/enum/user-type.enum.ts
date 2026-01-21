@@ -1,6 +1,6 @@
 export enum UserType {
   Aluno = 1,
-  Resp = 2,
+  Comum = 2,
   Monitor = 3,
   Civil = 4,
   Adm = 5,

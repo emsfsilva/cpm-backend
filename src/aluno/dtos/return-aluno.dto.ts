@@ -5,13 +5,16 @@ import { ReturnUserDto } from 'src/user/dtos/returnUser.dto';
 export class ReturnAlunoDTO {
   id: number;
   userId: number;
-  resp1: string;
-  resp2: string;
+  resp1: number;
+  resp2: number;
   grauInicial: number;
   grauAtual?: number;
   turmaId: number;
   turma?: ReturnTurma;
-  user?: ReturnUserDto; // Relacionamento com o UserDTO
+  user?: ReturnUserDto;
+
+  responsavel1?: ReturnUserDto;
+  responsavel2?: ReturnUserDto;
 
   constructor(alunoEntity: AlunoEntity, grauAtual?: number) {
     this.id = alunoEntity.id;
@@ -29,6 +32,14 @@ export class ReturnAlunoDTO {
     // Mapear o usuário associado ao aluno
     this.user = alunoEntity.user
       ? new ReturnUserDto(alunoEntity.user)
+      : undefined;
+
+    this.responsavel1 = alunoEntity.responsavel1
+      ? new ReturnUserDto(alunoEntity.responsavel1)
+      : undefined;
+
+    this.responsavel2 = alunoEntity.responsavel2
+      ? new ReturnUserDto(alunoEntity.responsavel2)
       : undefined;
   }
 }

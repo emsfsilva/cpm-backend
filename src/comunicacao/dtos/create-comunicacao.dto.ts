@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class CreateComunicacaoDTO {
   @IsNotEmpty()
@@ -18,6 +25,15 @@ export class CreateComunicacaoDTO {
   @IsNotEmpty()
   @IsString()
   descricaoMotivo: string;
+
+  @IsNotEmpty()
+  @IsDateString()
+  dataInicio: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Length(1, 5)
+  horaInicio: string;
 
   @IsString()
   natureza: string;

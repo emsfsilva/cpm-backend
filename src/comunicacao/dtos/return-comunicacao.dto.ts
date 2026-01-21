@@ -20,6 +20,12 @@ export class ReturnComunicacaoDTO {
   descricaoMotivo: string;
 
   @IsString()
+  dataInicio: string;
+
+  @IsString()
+  horaInicio: string;
+
+  @IsString()
   natureza: string;
 
   @IsOptional()
@@ -40,6 +46,20 @@ export class ReturnComunicacaoDTO {
   @IsOptional()
   @IsString()
   dataResp?: string;
+
+  @IsOptional()
+  @IsString()
+  dataCienciaResponsavel1?: string;
+
+  @IsOptional()
+  @IsString()
+  dataCienciaResponsavel2?: string;
+
+  @IsOptional()
+  responsavel1Viu?: boolean;
+
+  @IsOptional()
+  responsavel2Viu?: boolean;
 
   @IsOptional()
   @IsNumber()
@@ -119,6 +139,8 @@ export class ReturnComunicacaoDTO {
     this.motivo = comunicacaoEntity.motivo;
     this.grauMotivo = comunicacaoEntity.grauMotivo;
     this.descricaoMotivo = comunicacaoEntity.descricaoMotivo;
+    this.dataInicio = comunicacaoEntity.dataInicio;
+    this.horaInicio = comunicacaoEntity.horaInicio;
     this.natureza = comunicacaoEntity.natureza;
     this.enquadramento = comunicacaoEntity.enquadramento;
     this.dataCom = comunicacaoEntity.dataCom
@@ -129,6 +151,17 @@ export class ReturnComunicacaoDTO {
     this.dataResp = comunicacaoEntity.dataResp
       ? comunicacaoEntity.dataResp.toISOString()
       : null;
+
+    this.dataCienciaResponsavel1 = comunicacaoEntity.dataCienciaResponsavel1
+      ? comunicacaoEntity.dataCienciaResponsavel1.toISOString()
+      : null;
+
+    this.dataCienciaResponsavel2 = comunicacaoEntity.dataCienciaResponsavel2
+      ? comunicacaoEntity.dataCienciaResponsavel2.toISOString()
+      : null;
+
+    this.responsavel1Viu = !!comunicacaoEntity.dataCienciaResponsavel1;
+    this.responsavel2Viu = !!comunicacaoEntity.dataCienciaResponsavel2;
 
     this.userIdCmtCia = comunicacaoEntity.userIdCmtCia;
     this.parecerCmtCia = comunicacaoEntity.parecerCmtCia;

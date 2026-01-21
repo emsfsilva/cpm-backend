@@ -17,6 +17,8 @@ import { ReturnAlunoDTO } from './dtos/return-aluno.dto';
 import { UpdateAlunoDTO } from './dtos/update-aluno.dto';
 import { AlunoEntity } from './entities/aluno.entity';
 import { AlunoService } from './aluno.service';
+import { UpdateResponsaveisDTO } from './dtos/update-responsaveis.dto';
+import { AlunoTurmaTotalDTO } from './dtos/alunoturma-total.dto';
 
 @Controller('aluno')
 /*@Roles(
@@ -46,6 +48,12 @@ export class AlunoController {
     return this.alunoService.createAluno(createAluno);
   }
 
+  @Get('sem-turma')
+  async findAlunosSemTurma(): Promise<ReturnAlunoDTO[]> {
+    const alunos = await this.alunoService.findAlunosSemTurma();
+    return alunos.map((aluno) => new ReturnAlunoDTO(aluno));
+  }
+
   @Get('/:alunoId')
   async getAlunoById(
     @Param('alunoId') alunoId: number,
@@ -69,5 +77,28 @@ export class AlunoController {
     @Param('alunoId') alunoId: number,
   ): Promise<AlunoEntity> {
     return this.alunoService.updateAluno(updateAluno, alunoId);
+  }
+
+  @Put('/:alunoId/responsaveis')
+  async updateResponsaveis(
+    @Param('alunoId') alunoId: number,
+    @Body() updateResponsaveis: UpdateResponsaveisDTO,
+  ): Promise<AlunoEntity> {
+    return this.alunoService.updateResponsaveis(alunoId, updateResponsaveis);
+  }
+
+  // aluno.controller.ts
+
+  @Get('por-responsavel/:id')
+  async getAlunosPorResponsavel(
+    @Param('id') id: number,
+  ): Promise<ReturnAlunoDTO[]> {
+    const alunos = await this.alunoService.findAlunosPorResponsavel(id);
+    return alunos.map((aluno) => new ReturnAlunoDTO(aluno));
+  }
+
+  @Get('/alunoturma/totais')
+  async getAlunoTurmaTotais(): Promise<AlunoTurmaTotalDTO> {
+    return this.alunoService.getAlunoTurmaTotais();
   }
 }

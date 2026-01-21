@@ -1,12 +1,13 @@
+// createUser.dto.ts
 import { IsString, IsEnum, IsNumber } from 'class-validator';
-import { UserType } from '../enum/user-type.enum'; // Importe o enum UserType
+import { UserType } from '../enum/user-type.enum';
 
 export class CreateUserDto {
   @IsString()
   name: string;
 
   @IsString()
-  email: string;
+  seduc: string;
 
   @IsString()
   phone: string;
@@ -29,9 +30,6 @@ export class CreateUserDto {
   @IsString()
   funcao: string;
 
-  @IsString()
-  password: string;
-
-  @IsEnum(UserType) // Adiciona validação para garantir que o tipo seja válido
-  typeUser: UserType; // Agora o DTO tem o campo typeUser
+  @IsEnum(UserType)
+  typeUser: UserType;
 }

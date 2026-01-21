@@ -8,6 +8,7 @@ import { AlunoEntity } from 'src/aluno/entities/aluno.entity';
 import { AlunoService } from 'src/aluno/aluno.service';
 
 import { In } from 'typeorm';
+import { LoginPayload } from 'src/auth/dtos/loginPayload.dto';
 
 @Injectable()
 export class ComunicacaoService {
@@ -21,38 +22,80 @@ export class ComunicacaoService {
     private readonly alunoService: AlunoService,
   ) {}
 
+  // Função para retornar um objeto com contagem por CIA e status
+  async contarComunicacoesAgrupadasPorStatusECia(): Promise<
+    Record<string, Record<string, number>>
+  > {
+    const dadosBrutos = await this.contarComunicacoesPorStatusPorCia();
+
+    const resultado: Record<string, Record<string, number>> = {};
+
+    for (const row of dadosBrutos) {
+      const { ciaName, status, total } = row;
+
+      // Inicializa a companhia se ainda não existir
+      if (!resultado[ciaName]) {
+        resultado[ciaName] = {};
+      }
+
+      // Inicializa o status se ainda não existir
+      if (!resultado[ciaName][status]) {
+        resultado[ciaName][status] = 0;
+      }
+
+      resultado[ciaName][status] += total;
+    }
+
+    return resultado;
+  }
+
+  //Excluir Comunicacao
+  async excluirComunicacao(comunicacaoId: number): Promise<void> {
+    const comunicacao = await this.comunicacaoRepository.findOne({
+      where: { id: comunicacaoId },
+    });
+
+    if (!comunicacao) {
+      throw new NotFoundException(
+        `Comunicação com ID ${comunicacaoId} não encontrada.`,
+      );
+    }
+
+    await this.comunicacaoRepository.remove(comunicacao);
+  }
+
   // Função para buscar todas as comunicações
   async buscarTodasComunicacoes(): Promise<ReturnComunicacaoDTO[]> {
-    const comunicacoes = await this.comunicacaoRepository.find({
-      relations: {
-        useral: {
-          aluno: {
-            turma: {
-              cia: true,
-            },
-          },
-        },
-        usercom: true,
-        usercmtcia: true,
-        userca: true,
-        usersubcom: true,
-      },
-    });
+    const comunicacoes = await this.comunicacaoRepository
+      .createQueryBuilder('comunicacao')
+      .leftJoinAndSelect('comunicacao.useral', 'useral')
+      .leftJoinAndSelect('useral.aluno', 'aluno')
+      .leftJoinAndSelect('aluno.turma', 'turma')
+      .leftJoinAndSelect('turma.cia', 'cia')
+      .leftJoinAndSelect('comunicacao.usercom', 'usercom')
+      .leftJoinAndSelect('comunicacao.usercmtcia', 'usercmtcia')
+      .leftJoinAndSelect('comunicacao.userca', 'userca')
+      .leftJoinAndSelect('comunicacao.usersubcom', 'usersubcom')
+      .orderBy('comunicacao.dtatualizacaostatus', 'DESC')
+      .getMany();
+
     return comunicacoes.map(
       (comunicacao) => new ReturnComunicacaoDTO(comunicacao),
     );
   }
+
   // Função para buscar comunicações por id
   async findComunicacaoById(
     comunicacaoId: number,
+    userPayload: LoginPayload, // <--- adicionado aqui
   ): Promise<ReturnComunicacaoDTO> {
     const comunicacao = await this.comunicacaoRepository.findOne({
-      where: {
-        id: comunicacaoId,
-      },
+      where: { id: comunicacaoId },
       relations: {
         useral: {
           aluno: {
+            responsavel1: true,
+            responsavel2: true,
             turma: {
               cia: true,
             },
@@ -72,6 +115,7 @@ export class ComunicacaoService {
       );
     }
 
+    // Cálculo de grau
     if (comunicacao.useral?.aluno) {
       const grauAtual = await this.alunoService.calcularGrauAtual(
         comunicacao.useral.id,
@@ -79,9 +123,39 @@ export class ComunicacaoService {
       (comunicacao.useral.aluno as any).grauAtual = grauAtual;
     }
 
-    // Retorna o aluno como um DTO
+    // Marcar ciência dos responsáveis
+    const userId = userPayload.id;
+
+    const responsavel1Id = comunicacao?.useral?.aluno?.responsavel1?.id;
+    const responsavel2Id = comunicacao?.useral?.aluno?.responsavel2?.id;
+
+    let houveAtualizacao = false;
+
+    if (
+      responsavel1Id &&
+      responsavel1Id === userId &&
+      !comunicacao.dataCienciaResponsavel1
+    ) {
+      comunicacao.dataCienciaResponsavel1 = new Date();
+      houveAtualizacao = true;
+    }
+
+    if (
+      responsavel2Id &&
+      responsavel2Id === userId &&
+      !comunicacao.dataCienciaResponsavel2
+    ) {
+      comunicacao.dataCienciaResponsavel2 = new Date();
+      houveAtualizacao = true;
+    }
+
+    if (houveAtualizacao) {
+      await this.comunicacaoRepository.save(comunicacao);
+    }
+
     return new ReturnComunicacaoDTO(comunicacao);
   }
+
   // Função para buscar comunicações por id do Aluno
   async findComunicacoesByAlunoUserId(
     userIdAl: number,
@@ -117,110 +191,51 @@ export class ComunicacaoService {
     );
   }
 
-  async contarComunicacoesConcluidas(): Promise<number> {
-    const comunicacoesConcluidas = await this.comunicacaoRepository.count({
-      where: {
-        status: In(['Comunicação arquivada', 'Comunicação publicada']),
-      },
-    });
-
-    return comunicacoesConcluidas;
-  }
-
-  async contarComunicacoesPublicadas(): Promise<number> {
-    const comunicacoesPublicadas = await this.comunicacaoRepository.count({
-      where: {
-        status: In(['Comunicação publicada']),
-      },
-    });
-
-    return comunicacoesPublicadas;
-  }
-
-  async contarComunicacoesAguardandoPublicacao(): Promise<number> {
-    const comunicacoesAguardandoPublicacao =
-      await this.comunicacaoRepository.count({
-        where: {
-          status: In(['Aguardando publicação']),
-        },
-      });
-
-    return comunicacoesAguardandoPublicacao;
-  }
-
-  async contarComunicacoesEmTramitacao(): Promise<number> {
-    const comunicacoesEmTramitacao = await this.comunicacaoRepository.count({
-      where: {
-        status: In([
-          'Aguardando notificar aluno',
-          'Aguardando resposta do aluno',
-          'Aguardando enviar ao Cmt da Cia',
-          'Aguardando parecer do Cmt da Cia',
-          'Aguardando parecer do Cmt do CA',
-          'Aguardando parecer do Subcomando',
-          'Aguardando publicação',
-        ]),
-      },
-    });
-
-    return comunicacoesEmTramitacao;
-  }
-
   //inicio Função para contar as comunicações da CIA pelo status
-  async contarComunicacoesPorStatusPorCia(): Promise<any> {
-    const comunicacoes = await this.comunicacaoRepository.find({
-      relations: [
-        'useral',
-        'useral.aluno',
-        'useral.aluno.turma',
-        'useral.aluno.turma.cia',
-      ],
-    });
+  async contarComunicacoesPorStatusPorCia(): Promise<
+    { ciaName: string; status: string; total: number }[]
+  > {
+    const result = await this.comunicacaoRepository
+      .createQueryBuilder('comunicacao')
+      .leftJoin('comunicacao.useral', 'useral')
+      .leftJoin('useral.aluno', 'aluno')
+      .leftJoin('aluno.turma', 'turma')
+      .leftJoin('turma.cia', 'cia')
+      .select('COALESCE(cia.name, :semCia)', 'ciaName')
+      .addSelect('comunicacao.status', 'status')
+      .addSelect('COUNT(comunicacao.id)', 'total')
+      .groupBy('cia.name')
+      .addGroupBy('comunicacao.status')
+      .setParameter('semCia', 'Sem CIA')
+      .getRawMany();
 
-    const resultado = {};
-
-    for (const comunicacao of comunicacoes) {
-      const ciaName = comunicacao.useral?.aluno?.turma?.cia?.name || 'Sem CIA';
-      const status = comunicacao.status;
-
-      if (!resultado[ciaName]) {
-        resultado[ciaName] = {};
-      }
-
-      if (!resultado[ciaName][status]) {
-        resultado[ciaName][status] = 0;
-      }
-
-      resultado[ciaName][status]++;
-    }
-
-    return resultado;
+    return result.map((row) => ({
+      ciaName: row.ciaName,
+      status: row.status,
+      total: Number(row.total),
+    }));
   }
 
   //inicio Função para contar as comunicações APENAS por CIA
-  async contarComunicacoesPorCia(): Promise<Record<string, number>> {
-    const comunicacoes = await this.comunicacaoRepository.find({
-      relations: [
-        'useral',
-        'useral.aluno',
-        'useral.aluno.turma',
-        'useral.aluno.turma.cia',
-      ],
-    });
+  async contarComunicacoesPorCia(): Promise<
+    { ciaName: string; total: number }[]
+  > {
+    const result = await this.comunicacaoRepository
+      .createQueryBuilder('comunicacao')
+      .leftJoin('comunicacao.useral', 'useral')
+      .leftJoin('useral.aluno', 'aluno')
+      .leftJoin('aluno.turma', 'turma')
+      .leftJoin('turma.cia', 'cia')
+      .select('COALESCE(cia.name, :semCia)', 'ciaName')
+      .addSelect('COUNT(comunicacao.id)', 'total')
+      .groupBy('cia.name')
+      .setParameter('semCia', 'Sem CIA')
+      .getRawMany();
 
-    const resultado: Record<string, number> = {};
-
-    for (const comunicacao of comunicacoes) {
-      const ciaName = comunicacao.useral?.aluno?.turma?.cia?.name || 'Sem CIA';
-
-      if (!resultado[ciaName]) {
-        resultado[ciaName] = 0;
-      }
-
-      resultado[ciaName]++;
-    }
-
-    return resultado;
+    return result.map((row) => ({
+      ciaName: row.ciaName,
+      total: Number(row.total),
+    }));
   }
 
   // Função para criar uma comunicação inicial
@@ -234,6 +249,8 @@ export class ComunicacaoService {
     comunicacao.grauMotivo = null;
     comunicacao.enquadramento = null;
     comunicacao.descricaoMotivo = createComunicacaoDTO.descricaoMotivo;
+    comunicacao.dataInicio = createComunicacaoDTO.dataInicio;
+    comunicacao.horaInicio = createComunicacaoDTO.horaInicio;
     comunicacao.natureza = null;
     comunicacao.dataCom = new Date();
     comunicacao.userIdAl = createComunicacaoDTO.userIdAl;
@@ -310,14 +327,19 @@ export class ComunicacaoService {
   async atualizarStatusParaEnviarAoCmtdaCia(
     comunicacaoId: number,
   ): Promise<ReturnComunicacaoDTO> {
+    console.log('Recebendo PUT para comunicação ID:', comunicacaoId);
+
     const comunicacao = await this.comunicacaoRepository.findOne({
       where: { id: comunicacaoId },
     });
+
     if (!comunicacao) {
       throw new NotFoundException('Comunicação não encontrada');
     }
+
     comunicacao.status = 'Aguardando parecer do Cmt da Cia';
     comunicacao.dtAtualizacaoStatus = new Date();
+
     const updatedComunicacao = await this.comunicacaoRepository.save(
       comunicacao,
     );

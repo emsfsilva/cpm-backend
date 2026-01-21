@@ -1,8 +1,9 @@
+// src/address/dtos/createAddress.dto.ts
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateAddressDto {
-  @IsString() //Precisa ser uma string
-  @IsOptional() // É opcional escreve-lo
+  @IsString()
+  @IsOptional()
   complement: string;
 
   @IsInt()
@@ -13,4 +14,7 @@ export class CreateAddressDto {
 
   @IsInt()
   cityId: number;
+
+  @IsInt()
+  userId: number;
 }

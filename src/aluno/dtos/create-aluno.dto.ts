@@ -1,14 +1,14 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 export class CreateAlunoDTO {
   @IsNumber()
   userId: number;
 
-  @IsString()
-  resp1: string;
+  @IsNumber()
+  resp1: number;
 
-  @IsString()
-  resp2: string;
+  @IsNumber()
+  resp2: number;
 
   @IsNumber()
   grauInicial: number;

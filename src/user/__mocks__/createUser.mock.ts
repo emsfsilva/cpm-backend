@@ -8,9 +8,8 @@ export const createUserMock: CreateUserDto = {
   mat: 1157590,
   nomeGuerra: 'Francisco',
   funcao: 'Master',
-  email: 'emailMockTest@email.com',
+  seduc: 'seducMock',
   name: 'qudlsjakf',
-  password: 'password',
   phone: '325632634',
   typeUser: UserType.Master,
 };

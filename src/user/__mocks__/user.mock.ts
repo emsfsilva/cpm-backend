@@ -3,13 +3,15 @@ import { UserType } from '../enum/user-type.enum';
 
 export const userEntityMock: UserEntity = {
   cpf: '123543543',
+  imagemUrl: '',
+  imagemPerfil: '',
   orgao: 'PMPE',
   pg: 'Cb',
   mat: 1157590,
   nomeGuerra: 'Francisco',
   funcao: 'Master',
   createdAt: new Date(),
-  email: 'emailmock@emali.com',
+  seduc: 'seducmock',
   id: 43242,
   name: 'nameMock',
   password: '$2b$10$S62WmVpIxL52Z.0y22DWfuaAz8.XUNESChWP.AlMFZnOJ9n9uiqi.',

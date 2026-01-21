@@ -14,15 +14,15 @@ import { CreateAddressDto } from './dtos/createAddress.dto';
 import { ReturnAddressDto } from './dtos/returnAddress.dto';
 import { AddressEntity } from './entities/address.entity';
 
-@Roles(
-  UserType.Master,
-  UserType.Comando,
-  UserType.CmtCa,
-  UserType.CmtCia,
-  UserType.Adm,
-  UserType.Monitor,
-  UserType.Aluno,
-)
+//@Roles(
+// UserType.Master,
+//UserType.Comando,
+//UserType.CmtCa,
+//UserType.CmtCia,
+//UserType.Adm,
+//UserType.Monitor,
+//UserType.Aluno,
+//)
 @UsePipes(ValidationPipe)
 @Controller('address')
 export class AddressController {
@@ -31,9 +31,9 @@ export class AddressController {
   @Post()
   async createAddress(
     @Body() createAddressDto: CreateAddressDto,
-    @UserId() userId: number,
+    @UserId() userLogadoId: number,
   ): Promise<AddressEntity> {
-    return this.addressService.createAddress(createAddressDto, userId);
+    return this.addressService.createAddress(createAddressDto, userLogadoId);
   }
 
   @Get()

@@ -7,4 +7,5 @@ export const createAddressMock: CreateAddressDto = {
   cityId: cityMock.id,
   complement: addressMock.complement,
   numberAddress: addressMock.numberAddress,
+  userId: 1,
 };

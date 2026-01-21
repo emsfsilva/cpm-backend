@@ -1,13 +1,15 @@
-import { CacheModule as CacheModuleNest, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 import { CacheService } from './cache.service';
 
 @Module({
   imports: [
-    CacheModuleNest.register({
-      ttl: 900000000,
+    CacheModule.register({
+      ttl: 900, // segundos
+      isGlobal: true,
     }),
   ],
   providers: [CacheService],
   exports: [CacheService],
 })
-export class CacheModule {}
+export class CacheCustomModule {}

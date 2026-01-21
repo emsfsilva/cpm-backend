@@ -17,7 +17,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<ReturnLogin> {
     const user: UserEntity | undefined = await this.userService
-      .findUserByEmail(loginDto.email)
+      .findUserBySeduc(loginDto.seduc)
       .catch(() => undefined);
 
     const isMatch = await validatePassword(
@@ -26,13 +26,10 @@ export class AuthService {
     );
 
     if (!user || !isMatch) {
-      throw new NotFoundException('Email ou Password esta invalido');
+      throw new NotFoundException('Login ou Senha invalido');
     }
-
     // Criar o LoginPayload com os dados do usuário
     const loginPayload = new LoginPayload(user);
-
-    // Logar os dados do LoginPayload
     console.log('Dados do LoginPayload:', loginPayload);
 
     return {

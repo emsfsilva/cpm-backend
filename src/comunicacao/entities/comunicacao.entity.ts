@@ -30,6 +30,12 @@ export class ComunicacaoEntity {
   @Column({ name: 'descricao_motivo', nullable: false })
   descricaoMotivo: string;
 
+  @Column({ name: 'datainicio', nullable: false })
+  dataInicio: string;
+
+  @Column({ name: 'horainicio', length: 5, nullable: false })
+  horaInicio: string;
+
   @Column({ name: 'natureza', nullable: true })
   natureza: string;
 
@@ -45,6 +51,22 @@ export class ComunicacaoEntity {
 
   @CreateDateColumn({ name: 'data_resp' })
   dataResp: Date;
+
+  //CIENCIA DOS RESPONSAVEIS
+
+  @Column({
+    name: 'data_ciencia_responsavel1',
+    type: 'timestamp',
+    nullable: true,
+  })
+  dataCienciaResponsavel1: Date;
+
+  @Column({
+    name: 'data_ciencia_responsavel2',
+    type: 'timestamp',
+    nullable: true,
+  })
+  dataCienciaResponsavel2: Date;
 
   // DADOS DO CMT DA CIA
 

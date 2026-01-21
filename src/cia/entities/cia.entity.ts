@@ -1,6 +1,3 @@
-import { AdmEntity } from 'src/adm/entities/adm.entity';
-import { CmtciaEntity } from 'src/cmtcia/entities/cmtcia.entity';
-import { MonitorEntity } from 'src/monitor/entities/monitor.entity';
 import { TurmaEntity } from 'src/turma/entities/turma.entity';
 import {
   Column,
@@ -27,13 +24,4 @@ export class CiaEntity {
 
   @OneToMany(() => TurmaEntity, (turma) => turma.cia)
   turmas?: TurmaEntity[];
-
-  @OneToMany(() => AdmEntity, (adm) => adm.cia)
-  adms?: AdmEntity[];
-
-  @OneToMany(() => MonitorEntity, (monitor) => monitor.cia)
-  monitores?: MonitorEntity[];
-
-  @OneToMany(() => CmtciaEntity, (cmtcia) => cmtcia.cia)
-  cmtcias?: CmtciaEntity[];
 }

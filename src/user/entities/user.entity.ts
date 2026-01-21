@@ -10,24 +10,26 @@ import {
 } from 'typeorm';
 import { UserType } from '../enum/user-type.enum';
 import { AlunoEntity } from 'src/aluno/entities/aluno.entity';
-import { AdmEntity } from 'src/adm/entities/adm.entity';
-import { CaEntity } from 'src/ca/entities/ca.entity';
 import { ComunicacaoEntity } from 'src/comunicacao/entities/comunicacao.entity';
-import { MonitorEntity } from 'src/monitor/entities/monitor.entity';
-import { CmtciaEntity } from 'src/cmtcia/entities/cmtcia.entity';
-import { SubcomEntity } from 'src/subcom/entities/subcom.entity';
-import { MasterEntity } from 'src/master/entities/master.entity';
+import { AutorizacaoEntity } from 'src/autorizacao/entities/autorizacao.entity';
+import { ComentarioEntity } from 'src/comentario/entities/comentario.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
-  @PrimaryGeneratedColumn('rowid')
+  @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ name: 'imagem_url', nullable: true })
+  imagemUrl: string;
+
+  @Column({ name: 'imagem_perfil', nullable: true })
+  imagemPerfil: string;
 
   @Column({ name: 'name', nullable: false })
   name: string;
 
-  @Column({ name: 'email', nullable: false })
-  email: string;
+  @Column({ name: 'seduc', nullable: false })
+  seduc: string;
 
   @Column({ name: 'phone' })
   phone: string;
@@ -57,7 +59,7 @@ export class UserEntity {
     name: 'type_user',
     nullable: false,
     type: 'enum',
-    enum: UserType, // Aqui você usa o enum atualizado
+    enum: UserType,
   })
   typeUser: UserType;
 
@@ -74,24 +76,6 @@ export class UserEntity {
 
   @OneToOne(() => AlunoEntity, (aluno) => aluno.user)
   aluno?: AlunoEntity;
-
-  @OneToOne(() => MonitorEntity, (monitor) => monitor.user)
-  monitor?: MonitorEntity;
-
-  @OneToOne(() => AdmEntity, (adm) => adm.user)
-  adm?: AdmEntity;
-
-  @OneToOne(() => CmtciaEntity, (cmtcia) => cmtcia.user)
-  cmtcia?: CmtciaEntity;
-
-  @OneToOne(() => CaEntity, (ca) => ca.user)
-  ca?: CaEntity;
-
-  @OneToOne(() => SubcomEntity, (subcom) => subcom.user)
-  subcom?: SubcomEntity;
-
-  @OneToOne(() => MasterEntity, (master) => master.user)
-  master?: MasterEntity;
 
   @OneToOne(() => ComunicacaoEntity, (comunicacao) => comunicacao.useral)
   useral?: ComunicacaoEntity;
@@ -113,4 +97,16 @@ export class UserEntity {
     (comunicacao) => comunicacao.userarquivador,
   )
   userarquivador?: ComunicacaoEntity;
+
+  @OneToOne(() => AutorizacaoEntity, (autorizacao) => autorizacao.useraut)
+  useraut?: AutorizacaoEntity;
+
+  @OneToOne(() => AutorizacaoEntity, (autorizacao) => autorizacao.useralaut)
+  useralaut?: AutorizacaoEntity;
+
+  @OneToOne(() => AutorizacaoEntity, (autorizacao) => autorizacao.userdespaaut)
+  userdespaaut?: AutorizacaoEntity;
+
+  @OneToOne(() => ComentarioEntity, (comentario) => comentario.usercomentario)
+  usercomentario?: ComentarioEntity;
 }
