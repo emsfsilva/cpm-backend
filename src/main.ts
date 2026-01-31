@@ -9,7 +9,9 @@ async function bootstrap() {
     credentials: true,
   });
 
+  console.log('Antes de escutar a porta 8081');
   await app.listen(8081);
+  console.log('Backend rodando na porta 8081');
 }
 
 bootstrap();
