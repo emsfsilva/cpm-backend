@@ -26,19 +26,19 @@ export class AutorizacaoService {
    * Atualiza automaticamente todas as autorizações com dataFinal já expirada
    */
   private async atualizarSituacoesExpiradas(): Promise<void> {
-    const hoje = new Date();
+    const hoje = moment().startOf('day');
 
     const vigentes = await this.autorizacaoRepository.find({
       where: { situacaoAtual: 'Vigente' },
     });
 
-    const expiradas = vigentes.filter((aut) => new Date(aut.dataFinal) < hoje);
+    const expiradas = vigentes.filter((aut) =>
+      moment(aut.dataFinal, 'YYYY-MM-DD').isBefore(hoje, 'day'),
+    );
 
-    if (expiradas.length > 0) {
-      for (const aut of expiradas) {
-        aut.situacaoAtual = 'Expirada';
-        await this.autorizacaoRepository.save(aut);
-      }
+    for (const aut of expiradas) {
+      aut.situacaoAtual = 'Expirada';
+      await this.autorizacaoRepository.save(aut);
     }
   }
 
@@ -73,17 +73,12 @@ export class AutorizacaoService {
    * Cria uma nova autorização
    */
   async create(dto: CreateAutorizacaoDto): Promise<ReturnAutorizacaoDto> {
-    const hoje = moment();
+    const hoje = moment().startOf('day');
     const dataFinal = moment(dto.dataFinal, 'YYYY-MM-DD');
-
-    // Garante que horaFinal = horaInicio
-    const horaInicio = dto.horaInicio;
-    const horaFinal = horaInicio;
 
     const autorizacao = this.autorizacaoRepository.create({
       ...dto,
-      horaInicio,
-      horaFinal, // força a igualdade
+      horaFinal: dto.horaInicio,
       statusAut: 'Pendente',
       situacaoAtual: dataFinal.isSameOrAfter(hoje, 'day')
         ? 'Vigente'
