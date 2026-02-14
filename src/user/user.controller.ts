@@ -19,21 +19,12 @@ import { UserType } from './enum/user-type.enum';
 import { ReturnAlunoDTO } from 'src/aluno/dtos/return-aluno.dto';
 
 @Controller('user')
-@Roles(
-  UserType.Master,
-  UserType.Comando,
-  UserType.CmtCa,
-  UserType.CmtCia,
-  UserType.Adm,
-  UserType.Monitor,
-  UserType.Aluno,
-  UserType.Comum,
-)
 @UsePipes(ValidationPipe)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @Roles(UserType.Master, UserType.Adm)
   async createUser(
     @Body() createUser: CreateUserDto,
   ): Promise<{ message: string; user: ReturnUserDto }> {
@@ -67,6 +58,7 @@ export class UserController {
   }
 
   @Patch('/:userId')
+  @Roles(UserType.Master, UserType.Adm)
   async updateUser(
     @Param('userId') userId: number,
     @Body() updatedUser: Partial<CreateUserDto>,
@@ -77,6 +69,7 @@ export class UserController {
 
   @Delete('/:userId')
   @HttpCode(204)
+  @Roles(UserType.Master, UserType.Adm)
   async deleteUser(@Param('userId') userId: number): Promise<void> {
     return this.userService.deleteUser(userId);
   }
@@ -90,6 +83,7 @@ export class UserController {
   }
 
   @Patch('/reset-password/:userId')
+  @Roles(UserType.Master, UserType.Adm)
   async resetPassword(@Param('userId') userId: number) {
     const user = await this.userService.resetPassword(userId);
     return { message: `Senha redefinida para o usuário ${user.seduc}` };

@@ -22,6 +22,36 @@ export class AutorizacaoService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
+  async findByAlunoTableId(alunoId: number) {
+    const aluno = await this.alunoRepository.findOne({
+      where: { id: alunoId },
+    });
+
+    if (!aluno) {
+      throw new NotFoundException('Aluno não encontrado');
+    }
+
+    return this.findByAlunoId(aluno.userId);
+  }
+
+  async findByResponsavel(userId: number): Promise<ReturnAutorizacaoDto[]> {
+    // 1️⃣ Pega todos os alunos em que o usuário é responsável
+    const dependentes = await this.alunoRepository.find({
+      where: [{ resp1: userId }, { resp2: userId }],
+    });
+
+    if (dependentes.length === 0) return [];
+
+    // 2️⃣ Para cada aluno, pega as autorizações ativas
+    const autorizacoes: ReturnAutorizacaoDto[] = [];
+    for (const aluno of dependentes) {
+      const auts = await this.findByAlunoId(aluno.userId); // já existente
+      autorizacoes.push(...auts);
+    }
+
+    return autorizacoes;
+  }
+
   /**
    * Atualiza automaticamente todas as autorizações com dataFinal já expirada
    */

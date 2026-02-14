@@ -7,10 +7,13 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { AutorizacaoService } from './autorizacao.service';
 import { CreateAutorizacaoDto } from './dtos/create-autorizacao.dto';
 import { DespachoAutorizacaoDto } from './dtos/despacho-autorizacao.dto';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('autorizacao')
 export class AutorizacaoController {
@@ -29,6 +32,18 @@ export class AutorizacaoController {
     return this.autorizacaoService.create(finalDto);
   }
 
+  @Get('aluno-id/:alunoId')
+  async findByAlunoTableId(@Param('alunoId') alunoId: number) {
+    return this.autorizacaoService.findByAlunoTableId(Number(alunoId));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('dependentes')
+  async findAutorizacoesDependentes(@Req() req) {
+    const userId = req.user.id;
+    return this.autorizacaoService.findByResponsavel(userId);
+  }
+
   @Patch(':id/despacho')
   despachar(@Param('id') id: number, @Body() dto: DespachoAutorizacaoDto) {
     return this.autorizacaoService.despachar(Number(id), dto);
@@ -39,9 +54,9 @@ export class AutorizacaoController {
     return this.autorizacaoService.findAll();
   }
 
-  @Get('aluno/:userId')
-  findByAlunoId(@Param('userId') userId: number) {
-    return this.autorizacaoService.findByAlunoId(Number(userId));
+  @Get('aluno/:id')
+  async findAutorizacoesByAluno(@Param('id') id: number) {
+    return this.autorizacaoService.findByAlunoId(Number(id));
   }
 
   @Get(':id')

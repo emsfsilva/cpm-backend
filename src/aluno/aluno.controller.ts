@@ -87,8 +87,6 @@ export class AlunoController {
     return this.alunoService.updateResponsaveis(alunoId, updateResponsaveis);
   }
 
-  // aluno.controller.ts
-
   @Get('por-responsavel/:id')
   async getAlunosPorResponsavel(
     @Param('id') id: number,
