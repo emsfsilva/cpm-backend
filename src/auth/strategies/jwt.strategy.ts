@@ -4,16 +4,17 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { LoginPayload } from '../dtos/loginPayload.dto';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'seu-secret', // Adicione fallback
+      secretOrKey: process.env.JWT_SECRET || 'seu-secret',
     });
   }
 
-  validate(payload: LoginPayload): LoginPayload {
+  async validate(payload: LoginPayload): Promise<LoginPayload> {
+    // Aqui você pode adicionar validações extras se quiser
     return payload;
   }
 }
