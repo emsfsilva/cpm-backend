@@ -102,12 +102,30 @@ export class AutorizacaoService {
   /**
    * Cria uma nova autorização
    */
-  async create(dto: CreateAutorizacaoDto): Promise<ReturnAutorizacaoDto> {
+  async create(
+    dto: CreateAutorizacaoDto,
+    userId: number,
+    typeUser: number,
+  ): Promise<ReturnAutorizacaoDto> {
+    if (typeUser === 1) {
+      dto.userIdAlAut = userId;
+    }
+
     const hoje = moment().startOf('day');
+    const dataInicio = moment(dto.dataInicio, 'YYYY-MM-DD');
     const dataFinal = moment(dto.dataFinal, 'YYYY-MM-DD');
+
+    if (dataInicio.isBefore(hoje, 'day')) {
+      throw new Error('A data inicial não pode ser anterior a hoje');
+    }
+
+    if (dataFinal.isBefore(dataInicio, 'day')) {
+      throw new Error('A data final não pode ser menor que a data inicial');
+    }
 
     const autorizacao = this.autorizacaoRepository.create({
       ...dto,
+      userIdAut: userId,
       horaFinal: dto.horaInicio,
       statusAut: 'Pendente',
       situacaoAtual: dataFinal.isSameOrAfter(hoje, 'day')
