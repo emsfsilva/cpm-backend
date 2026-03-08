@@ -23,13 +23,12 @@ export class AutorizacaoController {
   create(
     @Body() dto: CreateAutorizacaoDto,
     @Query('userIdAut') userIdAut: string,
+    @Query('typeUser') typeUserQuery?: string, // se quiser receber o tipo do usuário via query
   ) {
-    const finalDto = {
-      ...dto,
-      userIdAut: parseInt(userIdAut, 10),
-    };
+    const userId = parseInt(userIdAut, 10);
+    const typeUser = typeUserQuery ? parseInt(typeUserQuery, 10) : 0; // default se não enviar
 
-    return this.autorizacaoService.create(finalDto);
+    return this.autorizacaoService.create(dto, userId, typeUser);
   }
 
   @Get('aluno-id/:alunoId')
