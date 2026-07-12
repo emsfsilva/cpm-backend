@@ -9,6 +9,8 @@ import { AlunoService } from 'src/aluno/aluno.service';
 
 import { In } from 'typeorm';
 import { LoginPayload } from 'src/auth/dtos/loginPayload.dto';
+import { gerarHtmlComunicacao } from './pdf/comunicacao-pdf.template';
+import { PdfGeneratorService } from './pdf/pdf-generator.service';
 
 @Injectable()
 export class ComunicacaoService {
@@ -20,6 +22,8 @@ export class ComunicacaoService {
     private readonly alunoRepository: Repository<AlunoEntity>,
 
     private readonly alunoService: AlunoService,
+
+    private readonly pdfGeneratorService: PdfGeneratorService,
   ) {}
 
   // Função para retornar um objeto com contagem por CIA e status
@@ -47,6 +51,35 @@ export class ComunicacaoService {
     }
 
     return resultado;
+  }
+
+  async gerarPdfComunicacao(comunicacaoId: number): Promise<Buffer> {
+    const comunicacao = await this.comunicacaoRepository.findOne({
+      where: { id: comunicacaoId },
+      relations: {
+        useral: {
+          aluno: {
+            responsavel1: true,
+            responsavel2: true,
+            turma: { cia: true },
+          },
+        },
+        usercom: true,
+        usercmtcia: true,
+        userca: true,
+        usersubcom: true,
+        userarquivador: true,
+      },
+    });
+
+    if (!comunicacao) {
+      throw new NotFoundException(
+        `Comunicação id: ${comunicacaoId} não encontrada`,
+      );
+    }
+
+    const html = await gerarHtmlComunicacao(comunicacao);
+    return this.pdfGeneratorService.gerarPdfDeHtml(html);
   }
 
   //Excluir Comunicacao

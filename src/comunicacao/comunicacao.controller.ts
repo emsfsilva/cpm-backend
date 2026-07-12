@@ -8,7 +8,9 @@ import {
   Query,
   Get,
   UseGuards,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { ComunicacaoService } from './comunicacao.service';
 import { CreateComunicacaoDTO } from './dtos/create-comunicacao.dto';
 import { ReturnComunicacaoDTO } from './dtos/return-comunicacao.dto';
@@ -50,6 +52,28 @@ export class ComunicacaoController {
       createComunicacaoDTO,
       userIdCom,
     );
+  }
+
+  @Get(':comunicacaoId/pdf')
+  async gerarPdf(
+    @Param('comunicacaoId') comunicacaoId: number,
+    @Res() res: Response,
+  ): Promise<void> {
+    const pdfBuffer = await this.comunicacaoService.gerarPdfComunicacao(
+      comunicacaoId,
+    );
+
+    const nomeArquivo = `Comunicação nº ${comunicacaoId}.pdf`;
+    const nomeArquivoAscii = `Comunicacao_no_${comunicacaoId}.pdf`;
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename="${nomeArquivoAscii}"; filename*=UTF-8''${encodeURIComponent(
+        nomeArquivo,
+      )}`,
+      'Content-Length': pdfBuffer.length,
+    });
+    res.end(pdfBuffer);
   }
 
   @Delete(':id')

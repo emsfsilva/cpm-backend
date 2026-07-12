@@ -5,7 +5,7 @@ import { AutorizacaoEntity } from './entities/autorizacao.entity';
 import { CreateAutorizacaoDto } from './dtos/create-autorizacao.dto';
 import { ReturnAutorizacaoDto } from './dtos/return-autorizacao.dto';
 import { AlunoEntity } from 'src/aluno/entities/aluno.entity';
-import * as moment from 'moment';
+import moment from 'moment';
 import { DespachoAutorizacaoDto } from './dtos/despacho-autorizacao.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 

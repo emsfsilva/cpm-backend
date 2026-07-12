@@ -8,6 +8,7 @@ import { AlunoEntity } from 'src/aluno/entities/aluno.entity';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { AlunoModule } from 'src/aluno/aluno.module';
+import { PdfGeneratorService } from './pdf/pdf-generator.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { AlunoModule } from 'src/aluno/aluno.module';
     ]),
     forwardRef(() => AlunoModule),
   ],
-  providers: [ComunicacaoService, JwtService],
+  providers: [ComunicacaoService, JwtService, PdfGeneratorService],
   controllers: [ComunicacaoController],
   exports: [ComunicacaoService],
 })

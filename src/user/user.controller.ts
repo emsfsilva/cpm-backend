@@ -38,7 +38,7 @@ export class UserController {
   @Get()
   async getAllUser(): Promise<ReturnUserDto[]> {
     const users = await this.userService.getAllUser();
-    return users.map((userEntity) => new ReturnUserDto(userEntity)); // Transforma todos em ReturnUserDto
+    return users.map((userEntity) => new ReturnUserDto(userEntity));
   }
 
   @Get('/:userId')
