@@ -1,5 +1,6 @@
 import { ComunicacaoEntity } from '../entities/comunicacao.entity';
 import { imagemParaBase64 } from './image.util';
+import { iconUser, iconCheck, iconSchool } from './icons.util';
 
 // Ajuste para a URL real de verificação de autenticidade do documento
 const URL_VERIFICACAO_BASE =
@@ -27,7 +28,7 @@ function nomeExibicao(user: any, papel: string): string {
   if (!user) return '-';
   const pg = user.pg ? `${user.pg} ` : '';
   const nome = user.nomeGuerra ?? user.name ?? '';
-  return `${pg}${nome} | ${papel}`;
+  return `${iconUser()} ${pg}${nome} | ${papel}`;
 }
 
 /** Mapeia o status para uma cor de barra, seguindo o padrão do modelo (arquivada = vermelho) */
@@ -56,10 +57,7 @@ function renderSecaoParecer(secao: SecaoParecer): string {
       <div class="secao-titulo">${secao.numero} - ${secao.titulo}</div>
       <div class="card">
         <div class="card-header">
-          <span class="autor">👤 ${nomeExibicao(
-            secao.autor,
-            secao.papel,
-          )}</span>
+          <span class="autor">${nomeExibicao(secao.autor, secao.papel)}</span>
           <span class="data">${formatarDataHora(secao.data)}</span>
         </div>
         <div class="campo">
@@ -86,17 +84,17 @@ export async function gerarHtmlComunicacao(
 
   const blocoResponsaveis = [
     responsavel1
-      ? `<span class="responsavel">👤 ${
+      ? `<span class="responsavel">${iconUser()} ${
           responsavel1.pg ? responsavel1.pg + ' ' : ''
         }${responsavel1.name} ${
-          comunicacao.dataCienciaResponsavel1 ? '✅' : ''
+          comunicacao.dataCienciaResponsavel1 ? iconCheck() : ''
         }</span>`
       : '',
     responsavel2
-      ? `<span class="responsavel">👤 ${
+      ? `<span class="responsavel">${iconUser()} ${
           responsavel2.pg ? responsavel2.pg + ' ' : ''
         }${responsavel2.name} ${
-          comunicacao.dataCienciaResponsavel2 ? '✅' : ''
+          comunicacao.dataCienciaResponsavel2 ? iconCheck() : ''
         }</span>`
       : '',
   ]
@@ -258,8 +256,8 @@ export async function gerarHtmlComunicacao(
         2,
         '0',
       )}</div>
-      <div class="linha">👤 ${aluno?.name ?? '-'}</div>
-      <div class="linha">🏫 Turma: ${turma?.name ?? '-'} | ${
+      <div class="linha">${iconUser()} ${aluno?.name ?? '-'}</div>
+      <div class="linha">${iconSchool()} Turma: ${turma?.name ?? '-'} | ${
     cia?.name ?? 'Sem CIA'
   }</div>
     </div>
@@ -267,7 +265,7 @@ export async function gerarHtmlComunicacao(
     <div class="secao-titulo">I - Comunicação</div>
     <div class="card">
       <div class="card-header">
-        <span>👤 ${nomeExibicao(comunicacao.usercom, 'Comunicante')}</span>
+        <span>${nomeExibicao(comunicacao.usercom, 'Comunicante')}</span>
         <span class="data">${formatarDataHora(comunicacao.dataCom)}</span>
       </div>
       <div class="campo">
@@ -296,7 +294,7 @@ export async function gerarHtmlComunicacao(
     <div class="secao-titulo">II - Resposta</div>
     <div class="card">
       <div class="card-header">
-        <span>👤 ${nomeExibicao(aluno, 'Aluno')}</span>
+        <span>${nomeExibicao(aluno, 'Aluno')}</span>
         <span class="data">${formatarDataHora(comunicacao.dataResp)}</span>
       </div>
       <div class="campo">
@@ -340,7 +338,7 @@ export async function gerarHtmlComunicacao(
     })}
 
     <div class="assinatura">
-      <div class="nome-comandante">/* TODO: nome do Comandante do Colégio (config/BD) */</div>
+      <div class="nome-comandante">VALDECLEYTON CAVALCANTE MENDES - TEN CEL QOPM</div>
       <div class="cargo-comandante">Comandante do Colégio da Polícia Militar - CPM</div>
       <img class="logo" src="${logo}" alt="Logo" />
     </div>
